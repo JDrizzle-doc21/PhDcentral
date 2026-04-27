@@ -98,7 +98,7 @@ const SITE_DATA = {
       id: 1,
       title: "NSND Retrospective Cohort Review",
       subtitle: "Non smokers and non drinkers, a seperate clinicopathological entity in Oral squamous cell carcinoma ",
-      status: "2nd Draft completed",
+      status: "writing",
       progress: 90,
       startDate: "November 2025",
       targetDate: "May 2026",
@@ -112,7 +112,7 @@ const SITE_DATA = {
         { label: "Submission",               done: false },
       ],
       tasks: [
-        { text: "Final changes made",        status: "doing", due: "May 15 2026", },
+        { text: "Final changes made", status: "doing", due: "May 15 2026", note: "" },
         { text: "Distribute to all authors",           status: "todo", due: "May 2025", note: "" },
         { text: "Find journal to submit to",           status: "todo", due: "May 2025", note: "" },
         
@@ -193,10 +193,10 @@ const SITE_DATA = {
       targetDate: "Mar 2027",
       description: "Prospective collection of tumour tissue from patients undergoing resection for oral cavity SCC. Multi-site, multi-depth sampling with matched controls. 16S rRNA and shotgun metagenomic sequencing. Primary aim: characterise the intratumoural microbiome and its spatial heterogeneity.",
       milestones: [
-        { label: "Ethics approval",           done: true },
+        { label: "Ethics approval",           done: false },
         { label: "Biobank protocol finalised", done: false },
-        { label: "First case enrolled",        done: true },
-        { label: "Target recruitment (n=60)",  done: true },
+        { label: "First case enrolled",        done: false },
+        { label: "Target recruitment (n=60)",  done: false },
         { label: "Sequencing complete",        done: false },
         { label: "Analysis complete",          done: false },
       ],
