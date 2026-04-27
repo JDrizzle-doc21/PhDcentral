@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sample Log — Jonathan Daniel</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <script src="data.js"></script>
+  <style>
+    :root{--navy:#0f1f38;--teal:#1a7a6e;--teal-light:#22a898;--sand:#f5f0e8;--cream:#faf8f4;--muted:#6b7280;--border:#e2ddd5;--card:#fff;--radius:10px;--shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.06);--font-display:'DM Serif Display',Georgia,serif;--font-body:'DM Sans',system-ui,sans-serif}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font-body);background:#f0ede7;color:#1a1a2e;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+    nav{position:sticky;top:0;z-index:50;background:rgba(250,248,244,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px}
+    .nav-brand{font-family:var(--font-display);font-size:1rem;color:var(--navy)}
+    .back-link{font-size:.82rem;color:var(--muted);text-decoration:none}
+    .back-link:hover{color:var(--teal)}
+    .page{max-width:1100px;margin:0 auto;padding:2.5rem 2rem}
+
+    /* STATS */
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.4rem;box-shadow:var(--shadow)}
+    .stat-label{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+    .stat-value{font-family:var(--font-display);font-size:2.2rem;color:var(--navy);line-height:1;margin-bottom:.2rem}
+    .stat-sub{font-size:.8rem;color:var(--muted)}
+
+    /* PROGRESS */
+    .prog-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:2rem}
+    .prog-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.6rem}
+    .prog-label{font-weight:600;font-size:.9rem;color:var(--navy)}
+    .bar-track{height:10px;background:#e5e7eb;border-radius:99px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--teal-light));transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+    /* FILTER */
+    .filter-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center}
+    .filter-btn{padding:6px 14px;border-radius:6px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);font-family:var(--font-body);font-size:.8rem;font-weight:500;cursor:pointer;transition:all .15s}
+    .filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .filter-btn:hover:not(.active){border-color:var(--teal);color:var(--teal)}
+    .filter-label{font-size:.75rem;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+
+    /* SAMPLE TABLE */
+    .table-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow)}
+    table{width:100%;border-collapse:collapse;background:var(--card);font-size:.855rem}
+    thead{background:var(--navy);color:#fff}
+    th{padding:.75rem 1rem;text-align:left;font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
+    td{padding:.875rem 1rem;border-bottom:1px solid var(--border);vertical-align:top}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#fafaf9}
+    .sample-id{font-weight:700;color:var(--navy);font-family:var(--font-display);font-size:1rem}
+    .seq-badge{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:4px;white-space:nowrap}
+    .seq-not-yet{background:#f3f4f6;color:#9ca3af}
+    .seq-pending{background:#fef3c7;color:#92400e}
+    .seq-in-progress{background:#dbeafe;color:#1e40af}
+    .seq-complete{background:#d1fae5;color:#065f46}
+    .margin-clear{color:#166534;font-weight:600}
+    .margin-close{color:#92400e;font-weight:600}
+    .margin-involved{color:#991b1b;font-weight:600}
+    .margin-pending{color:var(--muted)}
+    .sample-types{display:flex;flex-wrap:wrap;gap:.3rem}
+    .type-tag{background:#eef4f3;color:var(--teal);font-size:.7rem;font-weight:600;padding:2px 7px;border-radius:4px}
+    .notes-cell{font-size:.8rem;color:var(--muted);font-style:italic;max-width:200px}
+    .no-data{text-align:center;padding:3rem 1rem;color:var(--muted);font-style:italic}
+
+    /* DETAIL MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,31,56,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--card);border-radius:var(--radius);max-width:560px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden;max-height:90vh;overflow-y:auto}
+    .modal-header{background:var(--navy);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
+    .modal-title{font-family:var(--font-display);font-size:1.3rem;color:#fff}
+    .modal-close{background:none;border:none;color:rgba(255,255,255,.6);font-size:1.2rem;cursor:pointer;padding:4px 8px}
+    .modal-close:hover{color:#fff}
+    .modal-body{padding:1.5rem}
+    .modal-row{display:grid;grid-template-columns:140px 1fr;gap:.5rem .75rem;margin-bottom:.5rem;align-items:start;border-bottom:1px solid var(--border);padding-bottom:.5rem}
+    .modal-row:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
+    .modal-key{font-size:.75rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding-top:1px}
+    .modal-val{font-size:.88rem;color:#1a1a2e}
+
+    .section-title{font-family:var(--font-display);font-size:1.5rem;color:var(--navy);margin-bottom:1rem;letter-spacing:-.01em}
+    .mini-heading{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem}
+
+    /* HOW TO ADD box */
+    .howto{background:linear-gradient(135deg,#eef7f6,#f0f7ff);border:1px solid #c8e6e3;border-radius:var(--radius);padding:1.5rem;margin-bottom:2rem}
+    .howto-title{font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem}
+    .howto pre{background:rgba(255,255,255,.7);border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:.78rem;overflow-x:auto;line-height:1.7;color:#1a1a2e}
+
+    @media(max-width:640px){.filter-row{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+<nav>
+  <span class="nav-brand">Sample Collection Log</span>
+  <a href="dashboard.html" class="back-link">← Dashboard</a>
+</nav>
+
+<div class="page">
+  <div style="margin-bottom:2rem">
+    <div class="mini-heading">Workstream 4</div>
+    <h1 class="section-title">Sample Collection & Main Experiment</h1>
+    <p style="color:var(--muted);font-size:.9rem">Prospective intratumoural microbiome characterisation — OCSCC. No patient-identifiable data is stored.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stat-grid" id="stat-grid"></div>
+
+  <!-- RECRUITMENT PROGRESS -->
+  <div class="prog-wrap">
+    <div class="prog-header">
+      <span class="prog-label">Recruitment Progress</span>
+      <span style="font-size:.85rem;color:var(--muted);font-weight:500" id="rec-pct"></span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="rec-bar" style="width:0%"></div></div>
+    <p style="font-size:.78rem;color:var(--muted);margin-top:.6rem" id="rec-note"></p>
+  </div>
+
+  <!-- HOW TO ADD -->
+  <div class="howto">
+    <div class="howto-title">📋 How to add a new sample</div>
+    <p style="font-size:.85rem;color:#374151;margin-bottom:.75rem;line-height:1.6">Open <strong>data.js</strong> and find the <code>samples: [</code> section. Copy the block below, paste it before the closing <code>]</code>, and fill in your details. Then re-upload to GitHub.</p>
+    <pre>{
+  sampleId: "OC-002",
+  date: "2025-09-08",
+  tumourSite: "Floor of mouth",
+  tumourStage: "T2N0M0",
+  samplingDepth: "All depths",
+  sampleTypes: ["Tumour core", "Normal mucosa control"],
+  storageMethod: "RNAlater + snap freeze",
+  sequencingStatus: "Not yet",
+  pathology: "Pending",
+  margins: "Pending",
+  notes: "",
+},</pre>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-row">
+    <span class="filter-label">Filter by sequencing:</span>
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('Not yet',this)">Not yet</button>
+    <button class="filter-btn" onclick="setFilter('Pending',this)">Pending</button>
+    <button class="filter-btn" onclick="setFilter('In progress',this)">In progress</button>
+    <button class="filter-btn" onclick="setFilter('Complete',this)">Complete</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Sample ID</th>
+          <th>Date</th>
+          <th>Tumour Site</th>
+          <th>Stage</th>
+          <th>Depth</th>
+          <th>Sample Types</th>
+          <th>Storage</th>
+          <th>Sequencing</th>
+          <th>Margins</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="sample-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title"></span>
+      <button class="modal-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const D=SITE_DATA;
+let currentFilter='all';
+
+function seqClass(s){
+  const map={'Not yet':'seq-not-yet','Pending':'seq-pending','In progress':'seq-in-progress','Complete':'seq-complete'};
+  return map[s]||'seq-not-yet';
+}
+function marginClass(m){
+  const map={'Clear':'margin-clear','Close (<5mm)':'margin-close','Involved':'margin-involved','Pending':'margin-pending'};
+  return map[m]||'margin-pending';
+}
+
+function renderStats(){
+  const total=D.samples.length;
+  const target=D.phd.targetSampleSize;
+  const seqDone=D.samples.filter(s=>s.sequencingStatus==='Complete').length;
+  const seqPending=D.samples.filter(s=>s.sequencingStatus==='Pending'||s.sequencingStatus==='In progress').length;
+  const clearMargins=D.samples.filter(s=>s.margins==='Clear').length;
+  const pct=target>0?Math.round((total/target)*100):0;
+
+  const stats=[
+    {l:'Collected',v:total,s:`of ${target} target`},
+    {l:'Sequenced',v:seqDone,s:'complete'},
+    {l:'In Pipeline',v:seqPending,s:'pending/in progress'},
+    {l:'Clear Margins',v:clearMargins,s:'confirmed'},
+    {l:'Recruitment',v:pct+'%',s:'of target'},
+  ];
+  const sg=document.getElementById('stat-grid');sg.innerHTML='';
+  stats.forEach(s=>{sg.innerHTML+=`<div class="stat-card"><div class="stat-label">${s.l}</div><div class="stat-value">${s.v}</div><div class="stat-sub">${s.s}</div></div>`});
+
+  document.getElementById('rec-pct').textContent=`${total} / ${target} cases`;
+  setTimeout(()=>{document.getElementById('rec-bar').style.width=Math.min(pct,100)+'%'},100);
+  document.getElementById('rec-note').textContent=`Target: n=${target}. ${Math.max(0,target-total)} cases remaining to reach recruitment goal.`;
+}
+
+function renderTable(){
+  const tbody=document.getElementById('sample-tbody');tbody.innerHTML='';
+  const filtered=currentFilter==='all'?D.samples:D.samples.filter(s=>s.sequencingStatus===currentFilter);
+  if(!filtered.length){tbody.innerHTML=`<tr><td colspan="10" class="no-data">No samples match this filter.</td></tr>`;return}
+  filtered.forEach(s=>{
+    const types=s.sampleTypes.map(t=>`<span class="type-tag">${t}</span>`).join('');
+    const tr=document.createElement('tr');tr.style.cursor='pointer';
+    tr.onclick=()=>openModal(s);
+    tr.innerHTML=`
+      <td><span class="sample-id">${s.sampleId}</span></td>
+      <td style="white-space:nowrap">${s.date}</td>
+      <td>${s.tumourSite}</td>
+      <td style="white-space:nowrap">${s.tumourStage}</td>
+      <td>${s.samplingDepth}</td>
+      <td><div class="sample-types">${types}</div></td>
+      <td style="font-size:.8rem">${s.storageMethod}</td>
+      <td><span class="seq-badge ${seqClass(s.sequencingStatus)}">${s.sequencingStatus}</span></td>
+      <td><span class="${marginClass(s.margins)}">${s.margins}</span></td>
+      <td class="notes-cell">${s.notes||'—'}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function openModal(s){
+  document.getElementById('modal-title').textContent=s.sampleId;
+  const types=s.sampleTypes.join(', ');
+  document.getElementById('modal-body').innerHTML=`
+    <div class="modal-row"><div class="modal-key">Sample ID</div><div class="modal-val"><strong>${s.sampleId}</strong></div></div>
+    <div class="modal-row"><div class="modal-key">Date</div><div class="modal-val">${s.date}</div></div>
+    <div class="modal-row"><div class="modal-key">Tumour Site</div><div class="modal-val">${s.tumourSite}</div></div>
+    <div class="modal-row"><div class="modal-key">TNM Stage</div><div class="modal-val">${s.tumourStage}</div></div>
+    <div class="modal-row"><div class="modal-key">Sampling Depth</div><div class="modal-val">${s.samplingDepth}</div></div>
+    <div class="modal-row"><div class="modal-key">Sample Types</div><div class="modal-val">${types}</div></div>
+    <div class="modal-row"><div class="modal-key">Storage</div><div class="modal-val">${s.storageMethod}</div></div>
+    <div class="modal-row"><div class="modal-key">Sequencing</div><div class="modal-val"><span class="seq-badge ${seqClass(s.sequencingStatus)}">${s.sequencingStatus}</span></div></div>
+    <div class="modal-row"><div class="modal-key">Pathology</div><div class="modal-val">${s.pathology}</div></div>
+    <div class="modal-row"><div class="modal-key">Margins</div><div class="modal-val"><span class="${marginClass(s.margins)}">${s.margins}</span></div></div>
+    <div class="modal-row"><div class="modal-key">Notes</div><div class="modal-val">${s.notes||'—'}</div></div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e){if(e.target===document.getElementById('modal-overlay'))document.getElementById('modal-overlay').classList.remove('open')}
+
+renderStats();
+renderTable();
+</script>
+</body>
+</html>
