@@ -122,6 +122,28 @@ const SITE_DATA = {
         { date: "2025-02-03", entry: "Ethics approved. Data extraction commenced." },
         { date: "2025-03-20", entry: "Data extraction completed — n=[ ]. Moving to statistical analysis." },
       ],
+      // ── DOCUMENTS ──────────────────────────────────────────
+      // category options: "manuscript" | "protocol" | "extraction" | "analysis" | "ethics" | "other"
+      // status options:   "latest" | "draft" | "submitted" | "archived"
+      //
+      // HOW TO GET A GOOGLE DRIVE LINK:
+      //   1. Upload file to Google Drive
+      //   2. Right-click the file → "Get link"
+      //   3. Change access to "Anyone with the link can view"
+      //   4. Click "Copy link" and paste it as the url below
+      //
+      documents: [
+        {
+          title: "NSND Manuscript",
+          category: "manuscript",
+          notes: "Comparing NSND vs traditional risk factor OSCC",
+          versions: [
+            { label: "Draft 2", date: "Apr 2026", status: "latest", url: "" },
+            { label: "Draft 1", date: "Feb 2026", status: "archived", url: "" },
+          ],
+        },
+        // Add more documents here — copy the block above
+      ],
     },
     {
       id: 2,
@@ -154,6 +176,7 @@ const SITE_DATA = {
         { date: "2025-03-01", entry: "MEDLINE, EMBASE, Cochrane searched. n=[ ] records retrieved." },
         { date: "2025-04-05", entry: "Title/abstract screening complete. n=[ ] proceeding to full-text." },
       ],
+      documents: [],  // Add docs here when ready
     },
     {
       id: 3,
@@ -182,6 +205,7 @@ const SITE_DATA = {
         { text: "Draft + submit manuscript",       status: "todo", due: "Dec 2025",  note: "" },
       ],
       methodLog: [],
+      documents: [],  // Add docs here when ready
     },
     {
       id: 4,
@@ -210,6 +234,7 @@ const SITE_DATA = {
         { text: "Bioinformatics pipeline setup",                     status: "todo", due: "TBD",       note: "" },
       ],
       methodLog: [],
+      documents: [],  // Add docs here when ready
     },
     {
       id: 5,
@@ -234,6 +259,7 @@ const SITE_DATA = {
         { text: "Write up and submit",                            status: "todo", due: "Jun 2027", note: "" },
       ],
       methodLog: [],
+      documents: [],  // Add docs here when ready
     },
   ],
 
@@ -246,9 +272,29 @@ const SITE_DATA = {
   // ── PASSCODE ───────────────────────────────────────────────
   dashboardPasscode: "daniel2025",
 
+  // ── PRIVATE WORKSPACE PASSCODE ─────────────────────────────
+  // Your personal workspace (to-do lists + ideas journal).
+  // Change to anything you like.
+  workspacePasscode: "workspace2025",
+
   // ── GLOBAL METHOD LOG ──────────────────────────────────────
   globalMethodLog: [
     { date: "2025-01-01", workstream: "All", entry: "PhD candidature officially commenced." },
   ],
+
+  // ── HOW TO ADD LINKS TO A METHODOLOGY LOG ENTRY ────────────
+  // Inside any methodLog entry (in any workstream above), add a links array:
+  //
+  // { date: "2025-02-03", entry: "Ethics approved.",
+  //   detail: "Extended notes or rationale can go here as a longer paragraph.",
+  //   links: [
+  //     { type: "pdf",      title: "HREC Approval Letter",       url: "https://...",                           desc: "Signed approval document" },
+  //     { type: "obsidian", title: "Ethics Protocol Notes",      url: "obsidian://open?vault=PhD&file=ethics", desc: "My Obsidian note" },
+  //     { type: "doc",      title: "Consent Form v2",            url: "https://...",                           desc: "Word document" },
+  //     { type: "web",      title: "NHMRC Guidelines",           url: "https://www.nhmrc.gov.au/...",          desc: "Reference used" },
+  //   ],
+  // },
+  //
+  // type options: "pdf" | "obsidian" | "doc" | "web"
 
 };
