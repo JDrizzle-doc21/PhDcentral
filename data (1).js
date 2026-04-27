@@ -193,10 +193,10 @@ const SITE_DATA = {
       targetDate: "Mar 2027",
       description: "Prospective collection of tumour tissue from patients undergoing resection for oral cavity SCC. Multi-site, multi-depth sampling with matched controls. 16S rRNA and shotgun metagenomic sequencing. Primary aim: characterise the intratumoural microbiome and its spatial heterogeneity.",
       milestones: [
-        { label: "Ethics approval",           done: false },
+        { label: "Ethics approval",           done: true },
         { label: "Biobank protocol finalised", done: false },
-        { label: "First case enrolled",        done: false },
-        { label: "Target recruitment (n=60)",  done: false },
+        { label: "First case enrolled",        done: true },
+        { label: "Target recruitment (n=60)",  done: true },
         { label: "Sequencing complete",        done: false },
         { label: "Analysis complete",          done: false },
       ],
