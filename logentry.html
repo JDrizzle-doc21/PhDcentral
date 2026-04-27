@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Method Log Entry — Jonathan Daniel</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <script src="data.js"></script>
+  <style>
+    :root{--navy:#0f1f38;--teal:#1a7a6e;--teal-light:#22a898;--sand:#f5f0e8;--cream:#faf8f4;--muted:#6b7280;--border:#e2ddd5;--card:#fff;--radius:10px;--shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.06);--font-display:'DM Serif Display',Georgia,serif;--font-body:'DM Sans',system-ui,sans-serif}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font-body);background:#f0ede7;color:#1a1a2e;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+    nav{position:sticky;top:0;z-index:50;background:rgba(250,248,244,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px}
+    .nav-brand{font-family:var(--font-display);font-size:1rem;color:var(--navy)}
+    .breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted)}
+    .breadcrumb a{color:var(--muted);text-decoration:none}
+    .breadcrumb a:hover{color:var(--teal)}
+    .breadcrumb-sep{color:var(--border)}
+    .page{max-width:800px;margin:0 auto;padding:2.5rem 2rem}
+
+    /* ENTRY HEADER */
+    .entry-header{background:var(--navy);border-radius:var(--radius);padding:2rem;margin-bottom:2rem;color:#fff}
+    .entry-ws-label{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.5rem}
+    .entry-date{font-family:var(--font-display);font-size:2rem;color:#fff;line-height:1;margin-bottom:1rem}
+    .entry-text{font-size:1rem;color:rgba(255,255,255,.85);line-height:1.75}
+
+    /* CONTEXT / DETAIL */
+    .detail-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;box-shadow:var(--shadow);margin-bottom:1.5rem}
+    .detail-label{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.875rem}
+    .detail-text{font-size:.9rem;color:#374151;line-height:1.75}
+
+    /* LINKS */
+    .links-list{display:flex;flex-direction:column;gap:.75rem}
+    .link-card{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:box-shadow .2s,transform .2s}
+    .link-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);transform:translateY(-1px)}
+    .link-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .icon-pdf{background:#fef2f2;color:#dc2626}
+    .icon-obsidian{background:#f5f3ff;color:#7c3aed}
+    .icon-doc{background:#eff6ff;color:#2563eb}
+    .icon-web{background:#f0fdf4;color:#16a34a}
+    .link-info{flex:1;min-width:0}
+    .link-title{font-size:.9rem;font-weight:600;color:var(--navy);margin-bottom:.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .link-desc{font-size:.78rem;color:var(--muted)}
+    .link-type-badge{font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:4px;flex-shrink:0}
+    .type-pdf{background:#fef2f2;color:#dc2626}
+    .type-obsidian{background:#f5f3ff;color:#7c3aed}
+    .type-doc{background:#eff6ff;color:#2563eb}
+    .type-web{background:#f0fdf4;color:#16a34a}
+
+    .empty-links{background:linear-gradient(135deg,#eef7f6,#f0f7ff);border:1.5px dashed #c8e6e3;border-radius:var(--radius);padding:2rem;text-align:center}
+    .empty-links-title{font-size:.9rem;font-weight:600;color:var(--navy);margin-bottom:.5rem}
+    .empty-links-sub{font-size:.82rem;color:var(--muted);line-height:1.6}
+    .howto-snippet{background:rgba(255,255,255,.7);border:1px solid var(--border);border-radius:6px;padding:.875rem 1rem;margin-top:1rem;font-size:.78rem;line-height:1.7;text-align:left;color:#1a1a2e}
+    .howto-snippet code{background:#e5e7eb;padding:1px 5px;border-radius:3px;font-family:monospace}
+
+    .nav-btn{font-size:.8rem;font-weight:600;padding:6px 14px;background:var(--teal);color:#fff;border-radius:6px;text-decoration:none;transition:background .2s}
+    .nav-btn:hover{background:var(--teal-light)}
+    .prev-next{display:flex;justify-content:space-between;margin-top:2rem;gap:1rem}
+    .pn-btn{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;text-decoration:none;color:inherit;transition:box-shadow .2s;box-shadow:var(--shadow)}
+    .pn-btn:hover{box-shadow:0 4px 16px rgba(0,0,0,.1)}
+    .pn-label{font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+    .pn-text{font-size:.85rem;font-weight:500;color:var(--navy)}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="breadcrumb">
+    <a href="dashboard.html">Dashboard</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="#" id="bc-ws"></a>
+    <span class="breadcrumb-sep">›</span>
+    <span>Method Log Entry</span>
+  </div>
+  <a href="#" id="back-to-ws" class="nav-btn">← Back to Workstream</a>
+</nav>
+
+<div class="page" id="page">
+  <div style="color:var(--muted);font-size:.9rem;padding:2rem 0">Loading…</div>
+</div>
+
+<script>
+const D=SITE_DATA;
+const params=new URLSearchParams(window.location.search);
+const wsId=parseInt(params.get('ws'));
+const dateParam=decodeURIComponent(params.get('date')||'');
+const idxParam=parseInt(params.get('idx'));
+const ws=D.workstreams.find(w=>w.id===wsId);
+
+if(!ws){
+  document.getElementById('page').innerHTML='<div style="color:#c00;padding:2rem">Entry not found. <a href="dashboard.html">Back to dashboard</a></div>';
+}else{
+  // Find entry by index (most reliable) or fall back to date match
+  let entry=null;
+  if(!isNaN(idxParam)&&ws.methodLog[idxParam]){
+    entry=ws.methodLog[idxParam];
+  }else{
+    entry=ws.methodLog.find(e=>e.date===dateParam);
+  }
+  const idx=ws.methodLog.indexOf(entry);
+
+  document.getElementById('bc-ws').textContent=ws.title;
+  document.getElementById('bc-ws').href=`workstream.html?id=${ws.id}`;
+  document.getElementById('back-to-ws').href=`workstream.html?id=${ws.id}`;
+
+  if(!entry){
+    document.getElementById('page').innerHTML='<div style="color:#c00;padding:2rem">Entry not found. <a href="dashboard.html">Back to dashboard</a></div>';
+  }else{
+    document.title=`${entry.date} — ${ws.title}`;
+
+    // Links section
+    const links=entry.links||[];
+    function iconForType(type){
+      const map={pdf:'📄',obsidian:'🔮',doc:'📝',web:'🔗'};
+      return map[type]||'🔗';
+    }
+    function iconClassForType(type){
+      const map={pdf:'icon-pdf',obsidian:'icon-obsidian',doc:'icon-doc',web:'icon-web'};
+      return map[type]||'icon-web';
+    }
+    function badgeClassForType(type){
+      const map={pdf:'type-pdf',obsidian:'type-obsidian',doc:'type-doc',web:'type-web'};
+      return map[type]||'type-web';
+    }
+    function typeLabel(type){
+      const map={pdf:'PDF',obsidian:'Obsidian',doc:'Document',web:'Web Link'};
+      return map[type]||'Link';
+    }
+
+    const linksHTML=links.length===0?`
+      <div class="empty-links">
+        <div class="empty-links-title">No links attached yet</div>
+        <div class="empty-links-sub">You can attach PDFs, Obsidian notes, Word docs, and web links to this entry.<br>Open <strong>data.js</strong> and add a <code>links</code> array to this log entry.</div>
+        <div class="howto-snippet">
+          <strong>How to add links to this entry in data.js:</strong><br><br>
+          { date: "${entry.date}", entry: "...",<br>
+          &nbsp;&nbsp;links: [<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;{ type: "pdf", title: "Ethics Protocol v1", url: "https://...", desc: "Approved HREC protocol" },<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;{ type: "obsidian", title: "Sampling Notes", url: "obsidian://open?vault=PhD&file=sampling", desc: "My Obsidian note on this decision" },<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;{ type: "web", title: "Reference paper", url: "https://pubmed.ncbi.nlm.nih.gov/...", desc: "Key citation" },<br>
+          &nbsp;&nbsp;]<br>
+          },<br><br>
+          <strong>type options:</strong> "pdf" | "obsidian" | "doc" | "web"
+        </div>
+      </div>`
+    :links.map(l=>`
+      <a href="${l.url}" class="link-card" target="_blank" rel="noopener">
+        <div class="link-icon ${iconClassForType(l.type)}">${iconForType(l.type)}</div>
+        <div class="link-info">
+          <div class="link-title">${l.title}</div>
+          ${l.desc?`<div class="link-desc">${l.desc}</div>`:''}
+        </div>
+        <span class="link-type-badge ${badgeClassForType(l.type)}">${typeLabel(l.type)}</span>
+      </a>`).join('');
+
+    // Prev / next navigation
+    const prevEntry=idx>0?ws.methodLog[idx-1]:null;
+    const nextEntry=idx<ws.methodLog.length-1?ws.methodLog[idx+1]:null;
+    const prevHTML=prevEntry?`<a href="logentry.html?ws=${ws.id}&date=${encodeURIComponent(prevEntry.date)}&idx=${idx-1}" class="pn-btn"><div class="pn-label">← Earlier</div><div class="pn-text">${prevEntry.date}</div></a>`:`<div></div>`;
+    const nextHTML=nextEntry?`<a href="logentry.html?ws=${ws.id}&date=${encodeURIComponent(nextEntry.date)}&idx=${idx+1}" class="pn-btn" style="text-align:right"><div class="pn-label">Later →</div><div class="pn-text">${nextEntry.date}</div></a>`:`<div></div>`;
+
+    document.getElementById('page').innerHTML=`
+      <div class="entry-header">
+        <div class="entry-ws-label">Workstream ${ws.id} · ${ws.title}</div>
+        <div class="entry-date">${entry.date}</div>
+        <div class="entry-text">${entry.entry}</div>
+      </div>
+
+      ${entry.detail?`<div class="detail-card"><div class="detail-label">Extended Notes</div><div class="detail-text">${entry.detail}</div></div>`:''}
+
+      <div class="detail-card">
+        <div class="detail-label">Linked Documents, Protocols & References</div>
+        <div class="links-list">${linksHTML}</div>
+      </div>
+
+      <div class="prev-next">${prevHTML}${nextHTML}</div>`;
+  }
+}
+</script>
+</body>
+</html>
