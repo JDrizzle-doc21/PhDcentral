@@ -5,6 +5,48 @@
       <link>https://quartz.jzhao.xyz</link>
       <description>Last 10 notes on Quartz 4</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
-      
+      <item>
+    <title>PhD Dashboard</title>
+    <link>https://quartz.jzhao.xyz/00-Dashboard/PhD-Dashboard</link>
+    <guid>https://quartz.jzhao.xyz/00-Dashboard/PhD-Dashboard</guid>
+    <description><![CDATA[ PhD Overview — Intratumoural Microbiome of Oral Cavity SCC Research question Hypothesis Aims Methodology overview Where I am in the PhD Key concepts in this research Selected papers forming the foundation Recent updates This page is part of my public research site. ]]></description>
+    <pubDate>Tue, 28 Apr 2026 09:17:05 GMT</pubDate>
+  </item><item>
+    <title>Home</title>
+    <link>https://quartz.jzhao.xyz/Home</link>
+    <guid>https://quartz.jzhao.xyz/Home</guid>
+    <description><![CDATA[ PhD Vault — Intratumoural Microbiome of Oral Cavity SCC My personal research knowledge base. Notes tagged publish: true sync to the public website. ]]></description>
+    <pubDate>Tue, 28 Apr 2026 09:17:05 GMT</pubDate>
+  </item><item>
+    <title>Laryngectomy Review - Bradley et al</title>
+    <link>https://quartz.jzhao.xyz/Laryngectomy-Review/Laryngectomy-Review---Bradley-et-al</link>
+    <guid>https://quartz.jzhao.xyz/Laryngectomy-Review/Laryngectomy-Review---Bradley-et-al</guid>
+    <description><![CDATA[ [@soInfluentialFactorsSurvival2025] In stage 3 LC: Independent analyses of the three treatments did not show statistically significant differences (p &gt; 0.05) Patients who underwent laryngectomy in stage 4 LC were found to have better survival outcomes than those[@soInfluentialFactorsSurvival2025]... ]]></description>
+    <pubDate>Tue, 28 Apr 2026 09:17:05 GMT</pubDate>
+  </item><item>
+    <title>Welcome</title>
+    <link>https://quartz.jzhao.xyz/Laryngectomy-Review/Welcome</link>
+    <guid>https://quartz.jzhao.xyz/Laryngectomy-Review/Welcome</guid>
+    <description><![CDATA[ This is your new vault. Make a note of something, create a link, or try the Importer! When you’re ready, delete this note and make the vault your own. ]]></description>
+    <pubDate>Tue, 28 Apr 2026 09:17:05 GMT</pubDate>
+  </item><item>
+    <title>SETUP-GUIDE</title>
+    <link>https://quartz.jzhao.xyz/SETUP-GUIDE</link>
+    <guid>https://quartz.jzhao.xyz/SETUP-GUIDE</guid>
+    <description><![CDATA[ Obsidian + Quartz Setup Guide Connecting your vault to jdrizzle-doc21.github.io/PhDcentral/notes What you’re building Your Mac (Obsidian vault) ↓ sync folder GitHub repo: PhDcentral/ ├── index.html ← your existing site ├── dashboard.html ← your existing dashboard └── notes/ ← NEW: Quartz knowledge b... ]]></description>
+    <pubDate>Tue, 28 Apr 2026 09:17:05 GMT</pubDate>
+  </item><item>
+    <title>Research Notes</title>
+    <link>https://quartz.jzhao.xyz/</link>
+    <guid>https://quartz.jzhao.xyz/</guid>
+    <description><![CDATA[ Research Notes Welcome to my PhD knowledge base — intratumoural microbiome of oral cavity SCC. Navigate PhD Overview Concepts Paper Summaries . ]]></description>
+    <pubDate>Tue, 28 Apr 2026 09:17:05 GMT</pubDate>
+  </item><item>
+    <title>Concept 1</title>
+    <link>https://quartz.jzhao.xyz/Concept-1</link>
+    <guid>https://quartz.jzhao.xyz/Concept-1</guid>
+    <description><![CDATA[ Collection protocol Definition Why this matters to my research Mechanism / how it works Key evidence — Controversies / open questions How I’m applying this Connections This note is part of my PhD knowledge base. ]]></description>
+    <pubDate>Tue, 28 Apr 2026 00:00:00 GMT</pubDate>
+  </item>
     </channel>
   </rss>
