@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhD Dashboard — Jonathan Daniel</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <script src="data.js"></script>
+  <style>
+    :root{--navy:#0f1f38;--teal:#1a7a6e;--teal-light:#22a898;--sand:#f5f0e8;--cream:#faf8f4;--muted:#6b7280;--border:#e2ddd5;--card:#fff;--radius:10px;--shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.06);--shadow-hover:0 4px 12px rgba(0,0,0,.1),0 12px 32px rgba(0,0,0,.09);--font-display:'DM Serif Display',Georgia,serif;--font-body:'DM Sans',system-ui,sans-serif}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font-body);background:#f0ede7;color:#1a1a2e;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+    #lock-screen{position:fixed;inset:0;z-index:999;background:var(--navy);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem}
+    .lock-logo{font-family:var(--font-display);font-size:2rem;color:#fff;text-align:center}
+    .lock-logo span{color:var(--teal-light)}
+    .lock-sub{color:rgba(255,255,255,.5);font-size:.85rem}
+    .lock-form{display:flex;flex-direction:column;gap:.75rem;align-items:center;width:280px}
+    .lock-input{width:100%;padding:12px 16px;border-radius:8px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#fff;font-family:var(--font-body);font-size:1rem;text-align:center;letter-spacing:.08em;outline:none;transition:border-color .2s}
+    .lock-input:focus{border-color:var(--teal-light)}
+    .lock-btn{width:100%;padding:12px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:var(--font-body);font-size:.9rem;font-weight:600;cursor:pointer;transition:background .2s}
+    .lock-btn:hover{background:var(--teal-light)}
+    .lock-error{color:#f87171;font-size:.8rem;display:none}
+    .lock-back{color:rgba(255,255,255,.4);font-size:.8rem;text-decoration:none}
+    .dash-nav{position:sticky;top:0;z-index:50;background:rgba(250,248,244,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px}
+    .dash-nav-left{display:flex;align-items:center;gap:1rem}
+    .dash-nav-brand{font-family:var(--font-display);font-size:1rem;color:var(--navy)}
+    .badge{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 8px;border-radius:4px}
+    .badge-amber{background:#fef3c7;color:#92400e}
+    .dash-nav-tabs{display:flex;gap:.25rem}
+    .dash-tab{padding:6px 14px;border-radius:6px;font-size:.82rem;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s}
+    .dash-tab:hover{background:var(--sand);color:var(--navy)}
+    .dash-tab.active{background:var(--navy);color:#fff}
+    .back-link{font-size:.8rem;color:var(--muted);text-decoration:none}
+    .back-link:hover{color:var(--teal)}
+    .dash-body{max-width:1100px;margin:0 auto;padding:2.5rem 2rem}
+    .tab-pane{display:none}
+    .tab-pane.active{display:block}
+    .grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin-bottom:2rem}
+    .ov-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.4rem;box-shadow:var(--shadow);transition:box-shadow .2s,transform .2s}
+    .ov-card.clickable{cursor:pointer}
+    .ov-card.clickable:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
+    .ov-label{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+    .ov-value{font-family:var(--font-display);font-size:2rem;color:var(--navy);line-height:1;margin-bottom:.2rem}
+    .ov-sub{font-size:.8rem;color:var(--muted)}
+    .ov-hint{font-size:.72rem;color:var(--teal);margin-top:.4rem;font-weight:600}
+    .progress-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:2rem}
+    .progress-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.6rem}
+    .progress-label{font-weight:600;font-size:.9rem;color:var(--navy)}
+    .progress-pct{font-size:.85rem;color:var(--muted);font-weight:500}
+    .bar-track{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--teal-light));transition:width 1s cubic-bezier(.4,0,.2,1)}
+    .mini-bar-track{width:100%;height:4px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-top:.75rem}
+    .mini-bar-fill{height:100%;background:var(--teal);border-radius:99px}
+    .section-title{font-family:var(--font-display);font-size:1.5rem;color:var(--navy);margin-bottom:1.25rem;letter-spacing:-.01em}
+    .ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:2rem}
+    .ws-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);cursor:pointer;transition:box-shadow .2s,transform .2s;text-decoration:none;color:inherit;display:block}
+    .ws-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
+    .ws-num{font-family:var(--font-display);font-size:1.6rem;color:var(--border);line-height:1;margin-bottom:.5rem}
+    .ws-card-title{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:.3rem;line-height:1.35}
+    .ws-card-sub{font-size:.75rem;color:var(--muted);margin-bottom:.75rem;font-style:italic}
+    .status-badge{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:4px}
+    .status-not-started{background:#f3f4f6;color:#9ca3af}
+    .status-in-progress{background:#fef3c7;color:#92400e}
+    .status-writing{background:#dbeafe;color:#1e40af}
+    .status-submitted{background:#ede9fe;color:#5b21b6}
+    .status-complete{background:#d1fae5;color:#065f46}
+    .ws-pct-label{font-size:.72rem;color:var(--teal);font-weight:600;margin-top:.3rem}
+    .ws-open-hint{font-size:.72rem;color:var(--muted);margin-top:.5rem}
+    .sup-row{display:flex;align-items:center;gap:.75rem;padding:.5rem 0;border-bottom:1px solid var(--border)}
+    .sup-row:last-child{border-bottom:none}
+    .sup-av{width:36px;height:36px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-weight:700;flex-shrink:0}
+    .log-entry{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;box-shadow:var(--shadow);display:grid;grid-template-columns:140px 1fr;gap:1rem;align-items:start;margin-bottom:.625rem}
+    .log-date{font-size:.78rem;font-weight:600;color:var(--teal)}
+    .log-ws{font-size:.72rem;color:var(--muted);margin-top:2px}
+    .log-text{font-size:.87rem;color:#374151;line-height:1.65}
+    .mini-heading{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem}
+    .info-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1.5rem}
+  </style>
+</head>
+<body>
+<div id="lock-screen">
+  <div class="lock-logo">Jonathan <span>Daniel</span></div>
+  <div class="lock-sub">PhD Research Dashboard · Supervisor Access</div>
+  <div class="lock-form">
+    <input type="password" class="lock-input" id="passcode-input" placeholder="Enter passcode">
+    <button class="lock-btn" onclick="checkPasscode()">Access Dashboard</button>
+    <span class="lock-error" id="lock-error">Incorrect passcode.</span>
+    <a href="index.html" class="lock-back">← Back to public site</a>
+  </div>
+</div>
+
+<div id="dashboard" style="display:none">
+  <nav class="dash-nav">
+    <div class="dash-nav-left">
+      <span class="dash-nav-brand">PhD Dashboard</span>
+      <span class="badge badge-amber">Supervisor View</span>
+    </div>
+    <div class="dash-nav-tabs">
+      <button class="dash-tab active" onclick="showTab('overview',this)">Overview</button>
+      <button class="dash-tab" onclick="showTab('workstreams',this)">Workstreams</button>
+      <button class="dash-tab" onclick="showTab('methodology',this)">Method Log</button>
+    </div>
+    <a href="index.html" class="back-link">← Public site</a>
+  </nav>
+
+  <div class="dash-body">
+    <div id="tab-overview" class="tab-pane active">
+      <div style="margin-bottom:2rem">
+        <div class="mini-heading">PhD Candidate</div>
+        <h1 style="font-family:var(--font-display);font-size:1.8rem;color:var(--navy);letter-spacing:-.02em" id="db-name"></h1>
+        <p style="color:var(--muted);font-size:.88rem;margin-top:.25rem" id="db-phd-title"></p>
+      </div>
+      <div class="grid-auto" id="ov-grid"></div>
+      <div class="progress-wrap">
+        <div class="progress-header">
+          <span class="progress-label">Overall PhD Progress</span>
+          <span class="progress-pct" id="overall-pct"></span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="overall-bar" style="width:0%"></div></div>
+        <p style="font-size:.78rem;color:var(--muted);margin-top:.75rem" id="timeline-note"></p>
+      </div>
+      <h2 class="section-title">Workstreams <span style="font-family:var(--font-body);font-size:.85rem;color:var(--muted);font-weight:400">— click to open Kanban</span></h2>
+      <div class="ws-grid" id="ws-summary-grid"></div>
+      <div class="info-box">
+        <div class="mini-heading">Supervisory Team</div>
+        <div id="supervisors-list"></div>
+      </div>
+    </div>
+
+    <div id="tab-workstreams" class="tab-pane">
+      <h2 class="section-title">All Workstreams</h2>
+      <div class="ws-grid" id="ws-full-grid"></div>
+    </div>
+
+    <div id="tab-methodology" class="tab-pane">
+      <h2 class="section-title">Open Methodology Log</h2>
+      <div class="info-box"><p style="font-size:.88rem;color:#4b5563;line-height:1.7">Full chronological record of methodological decisions and milestones across all workstreams.</p></div>
+      <div id="full-log"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const D=SITE_DATA;
+function checkPasscode(){
+  if(document.getElementById('passcode-input').value.trim()===String(D.dashboardPasscode)){
+    document.getElementById('lock-screen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    init();
+  }else{document.getElementById('lock-error').style.display='block';document.getElementById('passcode-input').value=''}
+}
+document.getElementById('passcode-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPasscode()});
+function showTab(n,b){document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.dash-tab').forEach(x=>x.classList.remove('active'));document.getElementById('tab-'+n).classList.add('active');b.classList.add('active')}
+function statusLabel(s){return s.replace(/-/g,' ')}
+function makeWsCard(ws){
+  const a=document.createElement('a');a.href=`workstream.html?id=${ws.id}`;a.className='ws-card';
+  const done=ws.tasks.filter(t=>t.status==='done').length;
+  a.innerHTML=`<div class="ws-num">0${ws.id}</div><div class="ws-card-title">${ws.title}</div><div class="ws-card-sub">${ws.subtitle}</div><span class="status-badge status-${ws.status}">${statusLabel(ws.status)}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${ws.progress}%"></div></div><div class="ws-pct-label">${ws.progress}% · ${done}/${ws.tasks.length} tasks done</div><div class="ws-open-hint">Open Kanban board →</div>`;
+  return a;
+}
+function init(){
+  document.getElementById('db-name').textContent=`${D.name}, ${D.credentials}`;
+  document.getElementById('db-phd-title').textContent=D.phd.title;
+  const wsC=D.workstreams.filter(w=>w.status==='complete').length;
+  const wsA=D.workstreams.filter(w=>['in-progress','writing','submitted'].includes(w.status)).length;
+  const dm=D.workstreams.reduce((a,w)=>a+w.milestones.filter(m=>m.done).length,0);
+  const tm=D.workstreams.reduce((a,w)=>a+w.milestones.length,0);
+  const sc=D.samples.length;
+  const sq=D.samples.filter(s=>s.sequencingStatus==='Complete').length;
+  const stats=[
+    {l:'Workstreams',v:D.workstreams.length,s:`${wsC} complete`,link:false},
+    {l:'Active Aims', v:wsA,                s:'in progress',    link:false},
+    {l:'Milestones',  v:`${dm}/${tm}`,       s:'achieved',       link:false},
+    {l:'Samples',     v:sc,                  s:`of ${D.phd.targetSampleSize} target`,link:true,href:'samples.html',hint:'View sample log →'},
+    {l:'Sequenced',   v:sq,                  s:'samples complete',link:false},
+    {l:'Target Year', v:D.phd.targetCompletionYear,s:`${Math.max(0,D.phd.targetCompletionYear-new Date().getFullYear())} yrs`,link:false},
+    {l:'Ethics',      v:D.phd.ethics,        s:D.phd.ethicsRef||'ref pending',link:false},
+  ];
+  const og=document.getElementById('ov-grid');
+  stats.forEach(s=>{
+    const d=document.createElement('div');d.className='ov-card'+(s.link?' clickable':'');
+    if(s.link)d.onclick=()=>window.location=s.href;
+    d.innerHTML=`<div class="ov-label">${s.l}</div><div class="ov-value">${s.v}</div><div class="ov-sub">${s.s}</div>${s.hint?`<div class="ov-hint">${s.hint}</div>`:''}`;
+    og.appendChild(d);
+  });
+  document.getElementById('overall-pct').textContent=`${D.phd.overallProgress}% complete`;
+  setTimeout(()=>{document.getElementById('overall-bar').style.width=D.phd.overallProgress+'%'},100);
+  const elapsed=new Date().getFullYear()-D.phd.startYear;
+  const total=D.phd.targetCompletionYear-D.phd.startYear;
+  document.getElementById('timeline-note').textContent=`Year ${elapsed+1} of ${total} · ${D.phd.institution} · Enrolled ${D.phd.startYear}`;
+  const sg=document.getElementById('ws-summary-grid'),fg=document.getElementById('ws-full-grid');
+  D.workstreams.forEach(ws=>{sg.appendChild(makeWsCard(ws));fg.appendChild(makeWsCard(ws))});
+  const sl=document.getElementById('supervisors-list');
+  D.supervisors.forEach(s=>{
+    const i=s.name.split(' ').filter(w=>w[0]&&w[0]!=='[').map(w=>w[0]).slice(0,2).join('')||'?';
+    sl.innerHTML+=`<div class="sup-row"><div class="sup-av">${i}</div><div><div style="font-size:.88rem;font-weight:600;color:var(--navy)">${s.name}</div><div style="font-size:.78rem;color:var(--muted)">${s.role} · ${s.institution}</div></div></div>`;
+  });
+  const all=[];
+  D.workstreams.forEach(ws=>ws.methodLog.forEach(e=>all.push({...e,workstream:ws.title})));
+  D.globalMethodLog.forEach(e=>all.push(e));
+  all.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const fl=document.getElementById('full-log');
+  if(!all.length){fl.innerHTML='<div style="color:var(--muted);font-style:italic;font-size:.88rem">No entries yet.</div>';return}
+  all.forEach(e=>{fl.innerHTML+=`<div class="log-entry"><div><div class="log-date">${e.date}</div><div class="log-ws">${e.workstream}</div></div><div class="log-text">${e.entry}</div></div>`});
+}
+</script>
+</body>
+</html>
