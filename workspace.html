@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Workspace — Jonathan Daniel</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <script src="data.js"></script>
+  <style>
+    :root{--navy:#0f1f38;--teal:#1a7a6e;--teal-light:#22a898;--sand:#f5f0e8;--cream:#faf8f4;--muted:#6b7280;--border:#e2ddd5;--card:#fff;--radius:10px;--shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.06);--shadow-hover:0 4px 12px rgba(0,0,0,.1),0 12px 32px rgba(0,0,0,.09);--font-display:'DM Serif Display',Georgia,serif;--font-body:'DM Sans',system-ui,sans-serif}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font-body);background:#f0ede7;color:#1a1a2e;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+    /* LOCK */
+    #lock-screen{position:fixed;inset:0;z-index:999;background:linear-gradient(135deg,#0f1f38 0%,#1a3a2e 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem}
+    .lock-logo{font-family:var(--font-display);font-size:2rem;color:#fff;text-align:center}
+    .lock-logo span{color:var(--teal-light)}
+    .lock-sub{color:rgba(255,255,255,.5);font-size:.85rem;text-align:center}
+    .lock-form{display:flex;flex-direction:column;gap:.75rem;align-items:center;width:280px}
+    .lock-input{width:100%;padding:12px 16px;border-radius:8px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#fff;font-family:var(--font-body);font-size:1rem;text-align:center;letter-spacing:.08em;outline:none;transition:border-color .2s}
+    .lock-input:focus{border-color:var(--teal-light)}
+    .lock-btn{width:100%;padding:12px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:var(--font-body);font-size:.9rem;font-weight:600;cursor:pointer;transition:background .2s}
+    .lock-btn:hover{background:var(--teal-light)}
+    .lock-error{color:#f87171;font-size:.8rem;display:none}
+    .lock-back{color:rgba(255,255,255,.4);font-size:.8rem;text-decoration:none}
+    .lock-back:hover{color:rgba(255,255,255,.7)}
+
+    /* NAV */
+    nav{position:sticky;top:0;z-index:50;background:rgba(250,248,244,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px}
+    .nav-brand{font-family:var(--font-display);font-size:1rem;color:var(--navy)}
+    .nav-tabs{display:flex;gap:.25rem}
+    .nav-tab{padding:6px 16px;border-radius:6px;font-size:.82rem;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s;font-family:var(--font-body)}
+    .nav-tab:hover{background:var(--sand);color:var(--navy)}
+    .nav-tab.active{background:var(--navy);color:#fff}
+    .back-link{font-size:.8rem;color:var(--muted);text-decoration:none}
+    .back-link:hover{color:var(--teal)}
+
+    /* BODY */
+    .workspace{max-width:1000px;margin:0 auto;padding:2.5rem 2rem}
+    .tab-pane{display:none}
+    .tab-pane.active{display:block}
+    .section-title{font-family:var(--font-display);font-size:1.6rem;color:var(--navy);margin-bottom:.5rem;letter-spacing:-.01em}
+    .section-sub{font-size:.88rem;color:var(--muted);margin-bottom:1.75rem}
+
+    /* ── TO-DO LISTS ── */
+    .todo-layout{display:grid;grid-template-columns:260px 1fr;gap:1.5rem;align-items:start}
+    .list-sidebar{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+    .list-sidebar-header{padding:.875rem 1rem;font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);background:var(--sand)}
+    .list-item{padding:.75rem 1rem;cursor:pointer;font-size:.88rem;color:#374151;border-bottom:1px solid var(--border);transition:background .15s;display:flex;justify-content:space-between;align-items:center}
+    .list-item:last-child{border-bottom:none}
+    .list-item:hover{background:var(--sand)}
+    .list-item.active{background:#eef4f3;color:var(--teal);font-weight:600}
+    .list-item-count{font-size:.72rem;background:#e5e7eb;color:var(--muted);padding:1px 6px;border-radius:10px}
+    .new-list-btn{width:100%;padding:.75rem 1rem;border:none;background:transparent;color:var(--teal);font-family:var(--font-body);font-size:.85rem;font-weight:600;cursor:pointer;border-top:1px solid var(--border);text-align:left;transition:background .15s}
+    .new-list-btn:hover{background:#eef4f3}
+
+    .todo-main{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .todo-main-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:1rem}
+    .todo-list-title{font-family:var(--font-display);font-size:1.3rem;color:var(--navy);border:none;background:transparent;font-family:var(--font-display);font-size:1.3rem;color:var(--navy);outline:none;width:100%}
+    .todo-list-title:focus{outline:2px solid var(--teal);outline-offset:2px;border-radius:3px}
+    .del-list-btn{font-size:.75rem;color:#dc2626;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;white-space:nowrap}
+    .del-list-btn:hover{background:#fef2f2}
+    .todo-items{padding:.75rem 1rem;min-height:200px}
+    .todo-item{display:flex;align-items:center;gap:.75rem;padding:.6rem .5rem;border-radius:6px;transition:background .15s;group}
+    .todo-item:hover{background:#fafaf9}
+    .todo-item:hover .del-task-btn{opacity:1}
+    .todo-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--border);background:#fff;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s}
+    .todo-check.checked{background:var(--teal);border-color:var(--teal);color:#fff}
+    .todo-item-text{flex:1;font-size:.88rem;color:#374151;border:none;background:transparent;font-family:var(--font-body);outline:none;line-height:1.5}
+    .todo-item-text.done{text-decoration:line-through;color:var(--muted)}
+    .todo-item-text:focus{outline:none}
+    .del-task-btn{opacity:0;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:2px 6px;border-radius:4px;transition:opacity .15s,color .15s}
+    .del-task-btn:hover{color:#dc2626}
+    .add-task-row{padding:.75rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.75rem;align-items:center}
+    .add-task-input{flex:1;border:none;background:transparent;font-family:var(--font-body);font-size:.88rem;color:#374151;outline:none}
+    .add-task-input::placeholder{color:var(--muted)}
+    .add-task-btn{padding:6px 14px;background:var(--teal);color:#fff;border:none;border-radius:6px;font-family:var(--font-body);font-size:.82rem;font-weight:600;cursor:pointer;transition:background .15s}
+    .add-task-btn:hover{background:var(--teal-light)}
+    .no-list-selected{padding:3rem 2rem;text-align:center;color:var(--muted);font-size:.9rem}
+
+    /* ── IDEAS JOURNAL ── */
+    .ideas-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
+    .new-idea-btn{padding:8px 18px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:var(--font-body);font-size:.85rem;font-weight:600;cursor:pointer;transition:background .15s}
+    .new-idea-btn:hover{background:var(--teal-light)}
+    .ideas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+    .idea-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;cursor:pointer;transition:box-shadow .2s,transform .2s}
+    .idea-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
+    .idea-card-header{padding:.875rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+    .idea-title-preview{font-weight:600;font-size:.9rem;color:var(--navy);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .priority-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .p-high{background:#dc2626}
+    .p-medium{background:#f59e0b}
+    .p-low{background:#22c55e}
+    .p-none{background:#d1d5db}
+    .idea-card-body{padding:.875rem 1rem}
+    .idea-body-preview{font-size:.82rem;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:.75rem}
+    .idea-tags{display:flex;flex-wrap:wrap;gap:.3rem}
+    .idea-tag{background:#eef4f3;color:var(--teal);font-size:.68rem;font-weight:600;padding:2px 7px;border-radius:4px}
+    .idea-card-footer{padding:.625rem 1rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .idea-date{font-size:.72rem;color:var(--muted)}
+    .idea-link-count{font-size:.72rem;color:var(--teal);font-weight:600}
+    .no-ideas{text-align:center;padding:3rem;color:var(--muted);font-size:.9rem}
+
+    /* IDEA MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,31,56,.55);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--card);border-radius:var(--radius);width:100%;max-width:680px;box-shadow:0 20px 60px rgba(0,0,0,.25);margin:auto}
+    .modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;gap:1rem;align-items:center}
+    .modal-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:4px 8px;margin-left:auto;border-radius:4px}
+    .modal-close:hover{background:var(--sand);color:var(--navy)}
+    .modal-body{padding:1.5rem}
+    .field-label{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;margin-top:1rem}
+    .field-label:first-child{margin-top:0}
+    .field-input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:.9rem;color:#1a1a2e;outline:none;transition:border-color .2s;background:#fff}
+    .field-input:focus{border-color:var(--teal)}
+    .field-textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:.88rem;color:#1a1a2e;outline:none;transition:border-color .2s;resize:vertical;min-height:120px;line-height:1.7;background:#fff}
+    .field-textarea:focus{border-color:var(--teal)}
+    .priority-row{display:flex;gap:.5rem;flex-wrap:wrap}
+    .priority-btn{padding:6px 14px;border-radius:6px;border:1.5px solid var(--border);background:#fff;font-family:var(--font-body);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s}
+    .priority-btn.active-high{background:#fef2f2;border-color:#dc2626;color:#dc2626}
+    .priority-btn.active-medium{background:#fffbeb;border-color:#f59e0b;color:#92400e}
+    .priority-btn.active-low{background:#f0fdf4;border-color:#22c55e;color:#166534}
+    .priority-btn.active-none{background:var(--sand);border-color:var(--border);color:var(--muted)}
+
+    /* Links inside idea */
+    .idea-links-list{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
+    .idea-link-row{display:flex;gap:.5rem;align-items:center}
+    .idea-link-row select,.idea-link-row input{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-family:var(--font-body);font-size:.82rem;background:#fff;outline:none}
+    .idea-link-row select{width:110px;flex-shrink:0}
+    .idea-link-row input{flex:1}
+    .idea-link-row .del-link{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:2px 6px}
+    .idea-link-row .del-link:hover{color:#dc2626}
+    .add-link-btn{font-size:.8rem;color:var(--teal);background:none;border:none;cursor:pointer;font-family:var(--font-body);font-weight:600;padding:4px 0;margin-top:.25rem}
+    .add-link-btn:hover{text-decoration:underline}
+
+    .modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .save-btn{padding:9px 22px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:var(--font-body);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .15s}
+    .save-btn:hover{background:var(--teal-light)}
+    .delete-idea-btn{font-size:.8rem;color:#dc2626;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px}
+    .delete-idea-btn:hover{background:#fef2f2}
+
+    @media(max-width:640px){.todo-layout{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<!-- LOCK -->
+<div id="lock-screen">
+  <div class="lock-logo">My <span>Workspace</span></div>
+  <div class="lock-sub">Private · Jonathan Daniel</div>
+  <div class="lock-form">
+    <input type="password" class="lock-input" id="passcode-input" placeholder="Enter passcode">
+    <button class="lock-btn" onclick="checkPasscode()">Enter</button>
+    <span class="lock-error" id="lock-error">Incorrect passcode.</span>
+    <a href="index.html" class="lock-back">← Back to site</a>
+  </div>
+</div>
+
+<!-- WORKSPACE -->
+<div id="workspace" style="display:none">
+  <nav>
+    <span class="nav-brand">My Workspace</span>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('todos',this)">✅ To-Do Lists</button>
+      <button class="nav-tab" onclick="showTab('ideas',this)">💡 Ideas</button>
+    </div>
+    <a href="dashboard.html" class="back-link">← Dashboard</a>
+  </nav>
+
+  <div class="workspace">
+
+    <!-- TO-DO TAB -->
+    <div id="tab-todos" class="tab-pane active">
+      <h2 class="section-title">To-Do Lists</h2>
+      <p class="section-sub">Create multiple lists — by project, day, or anything you like. Everything saves automatically in your browser.</p>
+      <div class="todo-layout">
+        <div class="list-sidebar">
+          <div class="list-sidebar-header">My Lists</div>
+          <div id="list-nav"></div>
+          <button class="new-list-btn" onclick="newList()">+ New list</button>
+        </div>
+        <div class="todo-main" id="todo-main">
+          <div class="no-list-selected">Select a list or create a new one →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IDEAS TAB -->
+    <div id="tab-ideas" class="tab-pane">
+      <h2 class="section-title">Ideas Journal</h2>
+      <p class="section-sub">Capture research ideas, hypotheses, and notes. Each idea can have a priority, tags, and linked references.</p>
+      <div class="ideas-toolbar">
+        <div style="font-size:.85rem;color:var(--muted)" id="ideas-count"></div>
+        <button class="new-idea-btn" onclick="openIdeaModal(null)">+ New Idea</button>
+      </div>
+      <div class="ideas-grid" id="ideas-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- IDEA MODAL -->
+<div class="modal-overlay" id="idea-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div style="font-family:var(--font-display);font-size:1.1rem;color:var(--navy)" id="modal-mode-label">New Idea</div>
+      <button class="modal-close" onclick="closeIdeaModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-label">Title</div>
+      <input type="text" class="field-input" id="idea-title" placeholder="What's the idea?">
+      <div class="field-label">Body / Notes</div>
+      <textarea class="field-textarea" id="idea-body" placeholder="Describe the idea, hypothesis, or note in full..."></textarea>
+      <div class="field-label">Priority</div>
+      <div class="priority-row" id="priority-row">
+        <button class="priority-btn" onclick="setPriority('high',this)">🔴 High</button>
+        <button class="priority-btn" onclick="setPriority('medium',this)">🟡 Medium</button>
+        <button class="priority-btn" onclick="setPriority('low',this)">🟢 Low</button>
+        <button class="priority-btn active-none" onclick="setPriority('none',this)">⚪ None</button>
+      </div>
+      <div class="field-label">Tags <span style="font-weight:400;text-transform:none;letter-spacing:0">(comma separated)</span></div>
+      <input type="text" class="field-input" id="idea-tags" placeholder="e.g. microbiome, protocol, ML, hypothesis">
+      <div class="field-label">Links</div>
+      <div class="idea-links-list" id="idea-links-list"></div>
+      <button class="add-link-btn" onclick="addLinkRow()">+ Add link</button>
+    </div>
+    <div class="modal-footer">
+      <button class="delete-idea-btn" id="delete-idea-btn" onclick="deleteIdea()" style="display:none">Delete idea</button>
+      <button class="save-btn" onclick="saveIdea()">Save Idea</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const D=SITE_DATA;
+let WORKSPACE_PASS='';
+
+// ── AUTH ──
+function checkPasscode(){
+  const val=document.getElementById('passcode-input').value.trim();
+  // Workspace passcode stored separately in data.js
+  if(val===String(D.workspacePasscode||'workspace2025')){
+    document.getElementById('lock-screen').style.display='none';
+    document.getElementById('workspace').style.display='block';
+    WORKSPACE_PASS=val;
+    initWorkspace();
+  }else{
+    document.getElementById('lock-error').style.display='block';
+    document.getElementById('passcode-input').value='';
+  }
+}
+document.getElementById('passcode-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPasscode()});
+
+function showTab(n,b){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.add('active');
+  b.classList.add('active');
+}
+
+// ── STORAGE ──
+function load(key){try{return JSON.parse(localStorage.getItem('jd_'+key))||null}catch{return null}}
+function save(key,val){localStorage.setItem('jd_'+key,JSON.stringify(val))}
+
+// ── TO-DO LISTS ──
+let lists=[];
+let currentListId=null;
+
+function initTodos(){
+  lists=load('lists')||[];
+  renderListNav();
+  if(lists.length>0)selectList(lists[0].id);
+}
+
+function renderListNav(){
+  const nav=document.getElementById('list-nav');
+  nav.innerHTML='';
+  lists.forEach(l=>{
+    const pending=l.items.filter(i=>!i.done).length;
+    const div=document.createElement('div');
+    div.className='list-item'+(l.id===currentListId?' active':'');
+    div.innerHTML=`<span>${l.name}</span><span class="list-item-count">${pending}</span>`;
+    div.onclick=()=>selectList(l.id);
+    nav.appendChild(div);
+  });
+}
+
+function selectList(id){
+  currentListId=id;
+  renderListNav();
+  renderTodoMain();
+}
+
+function newList(){
+  const name=prompt('List name:');
+  if(!name)return;
+  const id='list_'+Date.now();
+  lists.push({id,name,items:[]});
+  save('lists',lists);
+  selectList(id);
+}
+
+function renderTodoMain(){
+  const list=lists.find(l=>l.id===currentListId);
+  const main=document.getElementById('todo-main');
+  if(!list){main.innerHTML='<div class="no-list-selected">Select a list or create a new one →</div>';return}
+  main.innerHTML=`
+    <div class="todo-main-header">
+      <input class="todo-list-title" id="list-title-input" value="${list.name}" onblur="renameList(this.value)">
+      <button class="del-list-btn" onclick="deleteList()">Delete list</button>
+    </div>
+    <div class="todo-items" id="todo-items-wrap"></div>
+    <div class="add-task-row">
+      <input class="add-task-input" id="new-task-input" placeholder="Add a task…" onkeydown="if(event.key==='Enter')addTask()">
+      <button class="add-task-btn" onclick="addTask()">Add</button>
+    </div>`;
+  renderItems();
+}
+
+function renderItems(){
+  const list=lists.find(l=>l.id===currentListId);
+  const wrap=document.getElementById('todo-items-wrap');
+  if(!wrap||!list)return;
+  if(list.items.length===0){wrap.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:.85rem">No tasks yet — add one below</div>';return}
+  wrap.innerHTML=list.items.map((item,i)=>`
+    <div class="todo-item">
+      <div class="todo-check ${item.done?'checked':''}" onclick="toggleItem(${i})">${item.done?'✓':''}</div>
+      <input class="todo-item-text ${item.done?'done':''}" value="${item.text.replace(/"/g,'&quot;')}" onblur="editItem(${i},this.value)" onkeydown="if(event.key==='Enter')this.blur()">
+      <button class="del-task-btn" onclick="deleteItem(${i})">✕</button>
+    </div>`).join('');
+}
+
+function addTask(){
+  const input=document.getElementById('new-task-input');
+  const text=input.value.trim();
+  if(!text)return;
+  const list=lists.find(l=>l.id===currentListId);
+  list.items.push({text,done:false});
+  save('lists',lists);
+  input.value='';
+  renderItems();
+  renderListNav();
+}
+
+function toggleItem(i){
+  const list=lists.find(l=>l.id===currentListId);
+  list.items[i].done=!list.items[i].done;
+  save('lists',lists);
+  renderItems();
+  renderListNav();
+}
+
+function editItem(i,val){
+  const list=lists.find(l=>l.id===currentListId);
+  if(val.trim())list.items[i].text=val.trim();
+  save('lists',lists);
+}
+
+function deleteItem(i){
+  const list=lists.find(l=>l.id===currentListId);
+  list.items.splice(i,1);
+  save('lists',lists);
+  renderItems();
+  renderListNav();
+}
+
+function renameList(name){
+  const list=lists.find(l=>l.id===currentListId);
+  if(name.trim())list.name=name.trim();
+  save('lists',lists);
+  renderListNav();
+}
+
+function deleteList(){
+  if(!confirm('Delete this list and all its tasks?'))return;
+  lists=lists.filter(l=>l.id!==currentListId);
+  save('lists',lists);
+  currentListId=null;
+  renderListNav();
+  renderTodoMain();
+}
+
+// ── IDEAS ──
+let ideas=[];
+let editingIdeaId=null;
+let currentPriority='none';
+let linkRows=[];
+
+function initIdeas(){
+  ideas=load('ideas')||[];
+  renderIdeas();
+}
+
+function renderIdeas(){
+  const grid=document.getElementById('ideas-grid');
+  const count=document.getElementById('ideas-count');
+  count.textContent=`${ideas.length} idea${ideas.length!==1?'s':''}`;
+  if(!ideas.length){grid.innerHTML='<div class="no-ideas" style="grid-column:1/-1">No ideas yet — click "+ New Idea" to start capturing</div>';return}
+  const sorted=[...ideas].sort((a,b)=>{
+    const po={high:0,medium:1,low:2,none:3};
+    return (po[a.priority]||3)-(po[b.priority]||3)||(new Date(b.created)-new Date(a.created));
+  });
+  grid.innerHTML=sorted.map(idea=>{
+    const tags=(idea.tags||[]).map(t=>`<span class="idea-tag">${t}</span>`).join('');
+    const linkCount=idea.links&&idea.links.length?`<span class="idea-link-count">📎 ${idea.links.length}</span>`:'';
+    return`<div class="idea-card" onclick="openIdeaModal('${idea.id}')">
+      <div class="idea-card-header">
+        <span class="idea-title-preview">${idea.title||'Untitled'}</span>
+        <span class="priority-dot p-${idea.priority||'none'}"></span>
+      </div>
+      <div class="idea-card-body">
+        <div class="idea-body-preview">${idea.body||'No notes yet.'}</div>
+        <div class="idea-tags">${tags}</div>
+      </div>
+      <div class="idea-card-footer">
+        <span class="idea-date">${new Date(idea.created).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}</span>
+        ${linkCount}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openIdeaModal(id){
+  editingIdeaId=id;
+  linkRows=[];
+  const modal=document.getElementById('idea-modal');
+  const idea=id?ideas.find(i=>i.id===id):null;
+  document.getElementById('modal-mode-label').textContent=idea?'Edit Idea':'New Idea';
+  document.getElementById('idea-title').value=idea?idea.title:'';
+  document.getElementById('idea-body').value=idea?idea.body:'';
+  document.getElementById('idea-tags').value=idea&&idea.tags?idea.tags.join(', '):'';
+  document.getElementById('delete-idea-btn').style.display=idea?'block':'none';
+  currentPriority=idea?idea.priority||'none':'none';
+  // Reset priority buttons
+  document.querySelectorAll('.priority-btn').forEach(b=>b.className='priority-btn');
+  document.querySelectorAll('.priority-btn').forEach(b=>{
+    if(b.textContent.toLowerCase().includes(currentPriority))b.className=`priority-btn active-${currentPriority}`;
+  });
+  // Links
+  linkRows=(idea&&idea.links)?idea.links.map(l=>({...l})):[];
+  renderLinkRows();
+  modal.classList.add('open');
+  document.getElementById('idea-title').focus();
+}
+
+function closeIdeaModal(){
+  document.getElementById('idea-modal').classList.remove('open');
+  editingIdeaId=null;
+}
+
+function setPriority(p,btn){
+  currentPriority=p;
+  document.querySelectorAll('.priority-btn').forEach(b=>b.className='priority-btn');
+  btn.className=`priority-btn active-${p}`;
+}
+
+function renderLinkRows(){
+  const list=document.getElementById('idea-links-list');
+  list.innerHTML=linkRows.map((l,i)=>`
+    <div class="idea-link-row">
+      <select onchange="linkRows[${i}].type=this.value">
+        <option value="web" ${l.type==='web'?'selected':''}>🔗 Web</option>
+        <option value="pdf" ${l.type==='pdf'?'selected':''}>📄 PDF</option>
+        <option value="obsidian" ${l.type==='obsidian'?'selected':''}>🔮 Obsidian</option>
+        <option value="doc" ${l.type==='doc'?'selected':''}>📝 Doc</option>
+      </select>
+      <input placeholder="Title" value="${l.title||''}" oninput="linkRows[${i}].title=this.value">
+      <input placeholder="URL / obsidian://..." value="${l.url||''}" oninput="linkRows[${i}].url=this.value">
+      <button class="del-link" onclick="removeLinkRow(${i})">✕</button>
+    </div>`).join('');
+}
+
+function addLinkRow(){linkRows.push({type:'web',title:'',url:''});renderLinkRows()}
+function removeLinkRow(i){linkRows.splice(i,1);renderLinkRows()}
+
+function saveIdea(){
+  const title=document.getElementById('idea-title').value.trim();
+  const body=document.getElementById('idea-body').value.trim();
+  const tagsRaw=document.getElementById('idea-tags').value;
+  const tags=tagsRaw.split(',').map(t=>t.trim()).filter(Boolean);
+  const links=linkRows.filter(l=>l.url||l.title);
+  if(!title){document.getElementById('idea-title').focus();return}
+  if(editingIdeaId){
+    const idea=ideas.find(i=>i.id===editingIdeaId);
+    Object.assign(idea,{title,body,priority:currentPriority,tags,links,updated:new Date().toISOString()});
+  }else{
+    ideas.push({id:'idea_'+Date.now(),title,body,priority:currentPriority,tags,links,created:new Date().toISOString()});
+  }
+  save('ideas',ideas);
+  renderIdeas();
+  closeIdeaModal();
+}
+
+function deleteIdea(){
+  if(!confirm('Delete this idea permanently?'))return;
+  ideas=ideas.filter(i=>i.id!==editingIdeaId);
+  save('ideas',ideas);
+  renderIdeas();
+  closeIdeaModal();
+}
+
+// Close modal on overlay click
+document.getElementById('idea-modal').addEventListener('click',e=>{if(e.target===document.getElementById('idea-modal'))closeIdeaModal()});
+
+// ── INIT ──
+function initWorkspace(){initTodos();initIdeas()}
+</script>
+</body>
+</html>
