@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Link vault content
+        run: cp -r vault-content/. notes-builder/content/
+
       - name: Build Quartz
         run: |
           cd notes-builder
